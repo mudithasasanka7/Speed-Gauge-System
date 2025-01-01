@@ -19,6 +19,8 @@
         app:sv_backgroundCircleColor="#1E1E1E"
         app:sv_centerCircleColor="#FF4800"
         app:sv_indicator="NormalIndicator"
+        app:sv_indicatorWidth="10dp"
+        app:sv_centerCircleRadius="20dp"
         app:sv_indicatorColor="#FF0000"
         app:sv_markColor="#FF0000"
         app:sv_maxSpeed="180"
@@ -43,5 +45,19 @@
         android:textSize="40sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF" />
+    <TextView
+        android:id="@+id/distanceValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/speedValue"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Distance: 000 km"
+        android:textSize="25sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:background="@drawable/dashboard_box"
+        android:padding="10dp"
+        android:gravity="center" />
 
 </RelativeLayout>

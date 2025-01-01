@@ -21,17 +21,24 @@ import androidx.core.app.ActivityCompat;
 import com.github.anastr.speedviewlib.PointerSpeedometer;
 import android.view.WindowManager;
 
+import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private PointerSpeedometer speedometer;
     private TextView speedValue;
     private LocationManager locationManager;
+    private Location previousLocation = null; // Stores the last known location
+    private double totalDistance = 0.0;       // Tracks the total distance in meters
+    private TextView distanceValue;          // TextView to display distance
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        distanceValue = findViewById(R.id.distanceValue); // Replace with the actual TextView ID
+        distanceValue.setText("Distance: 0.0 km");        // Initial display value
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         animatePointerOnStart();
@@ -111,6 +118,15 @@ public class MainActivity extends AppCompatActivity {
                     speedometer.setBackgroundCircleColor(Color.parseColor("#1E1E1E"));  // Original color
                 }
             }
+            // Distance calculation
+            if (previousLocation != null) {
+                float distance = previousLocation.distanceTo(location); // Distance in meters
+                totalDistance += distance; // Add to total distance
+                double distanceInKm = totalDistance / 1000.0; // Convert to kilometers
+                distanceValue.setText(String.format(Locale.getDefault(), "Distance: %.2f km", distanceInKm));
+            }
+
+            previousLocation = location; // Update previous location
         }
 
         @Override
@@ -154,11 +170,17 @@ public class MainActivity extends AppCompatActivity {
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            //Landscape mode acticity
             changeSpeedometerWidth(300);
-            Toast.makeText(this, "Landscape mode", Toast.LENGTH_SHORT).show();
+            adjustLayoutForLandscape();
+            adjustDistanceTextForLandscape();
+            changeSpeedTextSize(35);
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // Portrait mode acticity
             changeSpeedometerWidth(350);
-            Toast.makeText(this, "Portrait mode", Toast.LENGTH_SHORT).show();
+            changeSpeedTextSize(45);
+            adjustLayoutForPortrait();
+            adjustDistanceTextForPortrait();
         }
     }
     private void changeSpeedometerWidth(int widthInDp) {
@@ -169,5 +191,41 @@ public class MainActivity extends AppCompatActivity {
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) speedometer.getLayoutParams();
         layoutParams.width = widthInPx;  // Set the new width in pixels
         speedometer.setLayoutParams(layoutParams);  // Apply the new layout parameters
+    }
+    private void changeSpeedTextSize(float textSizeInSp) {
+        float textSizeInPx = textSizeInSp * getResources().getDisplayMetrics().scaledDensity;
+        speedometer.setSpeedTextSize(textSizeInPx);
+    }
+    private void adjustLayoutForLandscape() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) speedValue.getLayoutParams();
+        params.removeRule(RelativeLayout.BELOW); // Remove positioning below the gauge
+        params.addRule(RelativeLayout.RIGHT_OF, R.id.speedometer); // Position to the right of the gauge
+        params.setMargins(0, 20, 0, 0);
+        changeSpeedTextSize(25);
+        speedValue.setLayoutParams(params);
+    }
+
+    private void adjustLayoutForPortrait() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) speedValue.getLayoutParams();
+        params.removeRule(RelativeLayout.RIGHT_OF); // Remove positioning to the right
+        params.addRule(RelativeLayout.BELOW, R.id.speedometer); // Position below the gauge
+        params.setMargins(0, 20, 0, 0); // Add top margin for spacing
+        speedValue.setLayoutParams(params);
+    }
+    private void adjustDistanceTextForLandscape() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) distanceValue.getLayoutParams();
+        params.removeRule(RelativeLayout.BELOW); // Remove positioning below the gauge
+        params.addRule(RelativeLayout.RIGHT_OF, R.id.speedometer); // Position to the right of the gauge
+        params.addRule(RelativeLayout.CENTER_VERTICAL); // Center vertically
+        params.setMargins(20, 0, 0, 0); // Add left margin for spacing
+        distanceValue.setLayoutParams(params);
+    }
+    private void adjustDistanceTextForPortrait() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) distanceValue.getLayoutParams();
+        params.removeRule(RelativeLayout.RIGHT_OF); // Remove positioning to the right
+        params.removeRule(RelativeLayout.CENTER_VERTICAL); // Remove vertical centering
+        params.addRule(RelativeLayout.BELOW, R.id.speedValue); // Position below the gauge
+        params.setMargins(0, 20, 0, 0); // Add top margin for spacing
+        distanceValue.setLayoutParams(params);
     }
 }
