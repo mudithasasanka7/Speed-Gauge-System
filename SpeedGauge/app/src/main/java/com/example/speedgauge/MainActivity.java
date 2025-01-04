@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,13 +32,16 @@ public class MainActivity extends AppCompatActivity {
     private Location previousLocation = null; // Stores the last known location
     private double totalDistance = 0.0;       // Tracks the total distance in meters
     private TextView distanceValue;          // TextView to display distance
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         distanceValue = findViewById(R.id.distanceValue); // Replace with the actual TextView ID
         distanceValue.setText("Distance: 0.0 km");        // Initial display value
+
+        Button zeroButton = findViewById(R.id.btnZeroDistance);
+
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -53,7 +57,17 @@ public class MainActivity extends AppCompatActivity {
 
         // Check if GPS is enabled and request Location Updates
 //        checkAndEnableGPS();
+
     }
+    // Example: Update the displayed distance (inside your distance calculation logic)
+    private void updateDistance(double newDistance) {
+        totalDistance += newDistance; // Add the new distance
+        double displayDistance = totalDistance - zeroOffset; // Subtract the offset
+
+        TextView distanceTextView = findViewById(R.id.distanceValue);
+        distanceTextView.setText(String.format(Locale.getDefault(), "%.2f m", displayDistance));
+    }
+
 
     private void animatePointerOnStart() {
         // Move pointer to maximum speed and back to 0 with animation
