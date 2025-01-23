@@ -32,11 +32,12 @@ public class MainActivity extends AppCompatActivity {
     private Location previousLocation = null; // Stores the last known location
     private double totalDistance = 0.0;       // Tracks the total distance in meters
     private TextView distanceValue;          // TextView to display distance
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         distanceValue = findViewById(R.id.distanceValue); // Replace with the actual TextView ID
         distanceValue.setText("Distance: 0.0 km");        // Initial display value
 
@@ -56,17 +57,17 @@ public class MainActivity extends AppCompatActivity {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         // Check if GPS is enabled and request Location Updates
-//        checkAndEnableGPS();
+        checkAndEnableGPS();
 
     }
-    // Example: Update the displayed distance (inside your distance calculation logic)
-    private void updateDistance(double newDistance) {
-        totalDistance += newDistance; // Add the new distance
-        double displayDistance = totalDistance - zeroOffset; // Subtract the offset
-
-        TextView distanceTextView = findViewById(R.id.distanceValue);
-        distanceTextView.setText(String.format(Locale.getDefault(), "%.2f m", displayDistance));
-    }
+//    // Example: Update the displayed distance (inside your distance calculation logic)
+//    private void updateDistance(double newDistance) {
+//        totalDistance += newDistance; // Add the new distance
+//        double displayDistance = totalDistance - zeroOffset; // Subtract the offset
+//
+//        TextView distanceTextView = findViewById(R.id.distanceValue);
+//        distanceTextView.setText(String.format(Locale.getDefault(), "%.2f m", displayDistance));
+//    }
 
 
     private void animatePointerOnStart() {
@@ -119,18 +120,18 @@ public class MainActivity extends AppCompatActivity {
                 float speedInKmH = location.getSpeed() * 3.6f;
                 // Update Speedometer and TextView
                 speedometer.speedTo(speedInKmH);
-                speedValue.setText("Speed: " + Math.round(speedInKmH) + " km/h");
-                if (speedInKmH > 40) {
-                    // Change color to orange or red if speed > 40
-                    if (speedInKmH > 80) {
-                        speedometer.setBackgroundCircleColor(Color.RED);  // Speed > 80, red color
-                    } else {
-                        speedometer.setBackgroundCircleColor(Color.parseColor("#FFA500"));  // Speed > 40 but <= 80, orange color
-                    }
-                } else {
-                    // Default color for speed <= 40
-                    speedometer.setBackgroundCircleColor(Color.parseColor("#1E1E1E"));  // Original color
-                }
+//                speedValue.setText("Speed: " + Math.round(speedInKmH) + " km/h");
+//                if (speedInKmH > 40) {
+//                    // Change color to orange or red if speed > 40
+//                    if (speedInKmH > 80) {
+//                        speedometer.setBackgroundCircleColor(Color.RED);  // Speed > 80, red color
+//                    } else {
+//                        speedometer.setBackgroundCircleColor(Color.parseColor("#FFA500"));  // Speed > 40 but <= 80, orange color
+//                    }
+//                } else {
+//                    // Default color for speed <= 40
+//                    speedometer.setBackgroundCircleColor(Color.parseColor("#1E1E1E"));  // Original color
+//                }
             }
             // Distance calculation
             if (previousLocation != null) {
